@@ -11,12 +11,12 @@ const Home = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        // Update the API URL to use the hosted backend
+        // Corrected the API URL to include HTTPS
         const response = await axios.get("https://server-2-43kp.onrender.com/api/items");
         setItems(response.data);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching items:", error.response?.data || error.message);
+      } finally {
         setLoading(false);
       }
     };
@@ -25,8 +25,8 @@ const Home = () => {
   }, []);
 
   const handleOrder = (item) => {
-    // Construct the URL to redirect to the order management site with selected item details
-    const orderUrl = `http://localhost:5175/Order-management/create-order?itemName=${encodeURIComponent(item.name)}&price=${item.price}`;
+    // Construct the URL to redirect to the hosted order management system
+    const orderUrl = `https://restfulapi-order-management-system.netlify.app/create-order?itemName=${encodeURIComponent(item.name)}&price=${item.price}`;
 
     // Redirect to the order management site
     window.location.href = orderUrl;
