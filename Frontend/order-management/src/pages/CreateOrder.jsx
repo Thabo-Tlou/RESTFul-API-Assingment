@@ -4,29 +4,26 @@ import axios from "axios";
 import "../styles/create.css";
 
 const AddItem = () => {
-    const [availableItems, setAvailableItems] = useState([]); 
-    const [selectedItem, setSelectedItem] = useState(null); 
+    const [availableItems, setAvailableItems] = useState([]);
+    const [selectedItem, setSelectedItem] = useState(null);
     const [orderData, setOrderData] = useState({
-        name: "",
-        price: 0,
+        customerName: "",
         quantity: 1,
-        total: 0,
-        shippingAddress: "",
+        totalAmount: 0,
+        shippingDetails: {
+            address: "",
+            deliveryDays: 0,
+        },
         deliveryInstructions: "",
     });
-    const [quantityError, setQuantityError] = useState(false); 
+    const [quantityError, setQuantityError] = useState(false);
     const navigate = useNavigate();
 
-   
     useEffect(() => {
-        axios
-            .get("https://server-2-43kp.onrender.com/api/items")
-            .then((response) => {
-                setAvailableItems(response.data);
-            })
+        axios.get("https://server-2-43kp.onrender.com/api/items")
+            .then((response) => setAvailableItems(response.data))
             .catch((error) => console.error("Error fetching items:", error));
     }, []);
-
 
     const handleItemSelect = (e) => {
         const itemId = e.target.value;
@@ -35,17 +32,15 @@ const AddItem = () => {
         if (item) {
             setSelectedItem(item);
             setOrderData({
-                name: item.name,
-                price: item.price,
-                quantity: 1,
-                total: item.price,
-                shippingAddress: "",
-                deliveryInstructions: "",
+                ...orderData,
+                productId: item._id,
+                customerName: "",  // Reset customer name for new order
+                totalAmount: item.price,
+                shippingDetails: { ...orderData.shippingDetails },
             });
         }
     };
 
- 
     const handleQuantityChange = (e) => {
         const quantity = parseInt(e.target.value, 10);
         if (isNaN(quantity) || quantity < 1) {
@@ -55,20 +50,21 @@ const AddItem = () => {
             setOrderData((prevData) => ({
                 ...prevData,
                 quantity,
-                total: prevData.price * quantity,
+                totalAmount: selectedItem.price * quantity,
             }));
         }
     };
 
-
     const handleShippingChange = (e) => {
         setOrderData((prevData) => ({
             ...prevData,
-            shippingAddress: e.target.value,
+            shippingDetails: {
+                ...prevData.shippingDetails,
+                address: e.target.value,
+            },
         }));
     };
 
-  
     const handleDeliveryInstructionsChange = (e) => {
         setOrderData((prevData) => ({
             ...prevData,
@@ -76,8 +72,7 @@ const AddItem = () => {
         }));
     };
 
-    // Submit order
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!selectedItem) {
@@ -90,13 +85,14 @@ const AddItem = () => {
             return;
         }
 
-        axios
-            .post("https://server-2-43kp.onrender.com/api/orders", orderData)
-            .then(() => {
-                alert("Order placed successfully!");
-                navigate("/order-list");
-            })
-            .catch((error) => console.error("Error placing order:", error));
+        try {
+            await axios.post("https://server-2-43kp.onrender.com/api/orders", orderData);
+            alert("Order placed successfully!");
+            navigate("/order-list");
+        } catch (error) {
+            console.error("Error placing order:", error.response?.data || error.message);
+            alert("Failed to place order. Please check the details and try again.");
+        }
     };
 
     return (
@@ -116,10 +112,10 @@ const AddItem = () => {
                 {selectedItem && (
                     <>
                         <label>Item Name:</label>
-                        <input type="text" value={orderData.name} readOnly />
+                        <input type="text" value={selectedItem.name} readOnly />
 
                         <label>Price (per unit):</label>
-                        <input type="number" value={orderData.price} readOnly />
+                        <input type="number" value={selectedItem.price} readOnly />
 
                         <label>Quantity:</label>
                         <input
@@ -132,12 +128,12 @@ const AddItem = () => {
                         {quantityError && <span className="error">Invalid quantity</span>}
 
                         <label>Total Price:</label>
-                        <input type="number" value={orderData.total} readOnly />
+                        <input type="number" value={orderData.totalAmount} readOnly />
 
                         <label>Shipping Address:</label>
                         <input
                             type="text"
-                            value={orderData.shippingAddress}
+                            value={orderData.shippingDetails.address}
                             onChange={handleShippingChange}
                             required
                         />
