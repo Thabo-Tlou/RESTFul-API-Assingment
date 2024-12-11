@@ -1,34 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/Header.css'; // Import CSS for Header
+import axios from 'axios';
+import "../styles/ItemList.css"; 
 
-const Header = () => {
-    return ( <
-        header className = "header" >
-        <
-        div className = "header__content" >
-        <
-        h1 > Items Stock Management System < /h1> {/ * Corrected the < h > tag * /} <
-        nav className = "header__nav" >
-        <
-        ul className = "header__nav-list" > { /* Example navigation links */ } <
-        li >
-        <
-        Link to = "/" > Home < /Link> <
-        /li> <
-        li >
-        <
-        Link to = "/about" > About < /Link> <
-        /li> <
-        li >
-        <
-        Link to = "/contact" > Contact < /Link> <
-        /li> <
-        /ul> <
-        /nav> <
-        /div> <
-        /header>
+const ItemList = () => {
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+        // Fetch items from the backend
+        axios.get('http://localhost:5000/api/items')
+            .then((response) => setItems(response.data))
+            .catch((error) => console.error('Error fetching items:', error));
+    }, []);
+
+    const deleteItem = (id) => {
+        if (window.confirm('Are you sure you want to delete this item?')) {
+            axios.delete(`http://localhost:5000/api/items/${id}`)
+                .then(() => {
+                    alert('Item deleted successfully');
+                    setItems(items.filter((item) => item._id !== id));
+                })
+                .catch((error) => console.error('Error deleting item:', error));
+        }
+    };
+
+    return (
+        <div className="item-list">
+            <h2>Manage Items</h2>
+            <Link to="/add-item" className="add-button">Add New Item</Link>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {items.map((item) => (
+                        <tr key={item._id}>
+                            <td>{item.name}</td>
+                            <td>{item.price}</td>
+                            <td>{item.quantity}</td>
+                            <td>
+                                <Link to={`/edit-item/${item._id}`} className="edit-button">Edit</Link>
+                                <button onClick={() => deleteItem(item._id)} className="delete-button">Delete</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
     );
 };
 
-export default Header;
+export default ItemList;
