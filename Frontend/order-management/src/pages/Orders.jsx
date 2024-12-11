@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Header from "../components/Header";
-import "../styles/gen.css";
-import "../styles/animations.css";
+import "../styles/Orders.css";
+
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -24,8 +23,7 @@ const Orders = () => {
   }, []);
 
   return (
-    <div>
-      <Header />
+ 
       <div className="orders">
         <h1>All Orders</h1>
         {loading ? (
@@ -47,7 +45,7 @@ const Orders = () => {
           </ul>
         )}
       </div>
-    </div>
+
   );
 };
 

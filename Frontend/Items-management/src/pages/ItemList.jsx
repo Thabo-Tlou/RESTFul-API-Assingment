@@ -7,15 +7,15 @@ const ItemList = () => {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        // Fetch items from the backend
-        axios.get('http://localhost:5000/api/items')
+        
+        axios.get('https://server-2-43kp.onrender.com/api/items')
             .then((response) => setItems(response.data))
             .catch((error) => console.error('Error fetching items:', error));
     }, []);
 
     const deleteItem = (id) => {
         if (window.confirm('Are you sure you want to delete this item?')) {
-            axios.delete(`http://localhost:5000/api/items/${id}`)
+            axios.delete(`https://server-2-43kp.onrender.com/api/items/${id}`)
                 .then(() => {
                     alert('Item deleted successfully');
                     setItems(items.filter((item) => item._id !== id));

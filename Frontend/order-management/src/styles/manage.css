@@ -1,0 +1,71 @@
+.manage-orders {
+  margin: 20px auto;
+  max-width: 800px;
+  background-color:  #0056b3;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Subtler shadow */
+  color: #e0e0e0;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.manage-orders h1 {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.manage-orders ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.manage-orders li {
+  background-color:  #0056b3;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  color: #e0e0e0;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.manage-orders li:hover {
+  background-color: #3a3a3a; /* Slightly darker color on hover */
+}
+
+.manage-orders li p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #cfcfcf;
+}
+
+.manage-orders button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff; /* Vibrant blue */
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.manage-orders button:hover {
+  background-color: #0056b3; /* Darker blue for hover */
+}
+
+p {
+  color: #cfcfcf;
+}

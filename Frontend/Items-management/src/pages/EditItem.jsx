@@ -15,9 +15,12 @@ const EditItem = () => {
 
     useEffect(() => {
         // Fetch item data for editing
-        axios.get(`http://localhost:5000/api/items/${id}`)
+        axios.get(`https://server-2-43kp.onrender.com/api/items/${id}`)
             .then((response) => setFormData(response.data))
-            .catch((error) => console.error('Error fetching item:', error));
+            .catch((error) => {
+                console.error('Error fetching item:', error);
+                alert('Failed to fetch item details. Please try again.');
+            });
     }, [id]);
 
     const handleChange = (e) => {
@@ -27,12 +30,15 @@ const EditItem = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:5000/api/items/${id}`, formData)
+        axios.put(`https://server-2-43kp.onrender.com/api/items/${id}`, formData)
             .then(() => {
                 alert('Item updated successfully');
                 navigate('/item-list'); // Redirect to item list after successful update
             })
-            .catch((error) => console.error('Error updating item:', error));
+            .catch((error) => {
+                console.error('Error updating item:', error);
+                alert('Failed to update item. Please try again.');
+            });
     };
 
     return (
@@ -40,16 +46,38 @@ const EditItem = () => {
             <h2>Edit Item</h2>
             <form onSubmit={handleSubmit}>
                 <label>Name:</label>
-                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+                <input 
+                    type="text" 
+                    name="name" 
+                    value={formData.name} 
+                    onChange={handleChange} 
+                    required 
+                />
 
                 <label>Price:</label>
-                <input type="number" name="price" value={formData.price} onChange={handleChange} required />
+                <input 
+                    type="number" 
+                    name="price" 
+                    value={formData.price} 
+                    onChange={handleChange} 
+                    required 
+                />
 
                 <label>Quantity:</label>
-                <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
+                <input 
+                    type="number" 
+                    name="quantity" 
+                    value={formData.quantity} 
+                    onChange={handleChange} 
+                    required 
+                />
 
                 <label>Description:</label>
-                <textarea name="description" value={formData.description} onChange={handleChange}></textarea>
+                <textarea 
+                    name="description" 
+                    value={formData.description} 
+                    onChange={handleChange}
+                ></textarea>
 
                 <button type="submit">Update Item</button>
             </form>

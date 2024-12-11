@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/AddEditItem.css'; 
-import "../styles/App.css"
+import "../styles/App.css";
 
 const AddItem = () => {
     const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ const AddItem = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:5000/api/items', formData)
+        axios.post('https://server-2-43kp.onrender.com/api/items', formData) 
             .then(() => {
                 alert('Item added successfully');
                 setFormData({
@@ -30,9 +30,12 @@ const AddItem = () => {
                     quantity: '',
                     description: '',
                 });
-                navigate('/');
+                navigate('/'); 
             })
-            .catch((error) => console.error('Error adding item:', error));
+            .catch((error) => {
+                console.error('Error adding item:', error);
+                alert('Failed to add item. Please try again.');
+            });
     };
 
     return (

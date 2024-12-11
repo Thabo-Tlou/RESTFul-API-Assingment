@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Header from "../components/Header";
-import "../styles/gen.css";
-import "../styles/animations.css";
+import "../styles/manage.css"
 
 const ManageOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -33,8 +31,7 @@ const ManageOrders = () => {
   };
 
   return (
-    <div>
-      <Header />
+ 
       <div className="manage-orders">
         <h1>Manage Orders</h1>
         {loading ? (
@@ -57,7 +54,7 @@ const ManageOrders = () => {
           </ul>
         )}
       </div>
-    </div>
+   
   );
 };
 

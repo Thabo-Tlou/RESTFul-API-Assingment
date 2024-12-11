@@ -1,96 +1,162 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Header from "../components/Header";
-import "../styles/gen.css";
-import "../styles/animations.css";
+import "../styles/create.css";
 
-const CreateOrder = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const itemName = urlParams.get("itemName") || "";
-  const price = parseFloat(urlParams.get("price")) || 0;
-
-  const [shippingDetails, setShippingDetails] = useState({
-    address: "",
-    city: "",
-    zipCode: "",
-    deliveryDays: 5
-  });
-  const [totalAmount, setTotalAmount] = useState(price);
-  const [error, setError] = useState(null);
-
-  const calculateTotal = () => {
-    const shippingFee = 50; // Fixed shipping fee
-    setTotalAmount(price + shippingFee);
-  };
-
-  const handleInputChange = (e) => {
-    setShippingDetails({
-      ...shippingDetails,
-      [e.target.name]: e.target.value,
+const AddItem = () => {
+    const [availableItems, setAvailableItems] = useState([]); 
+    const [selectedItem, setSelectedItem] = useState(null); 
+    const [orderData, setOrderData] = useState({
+        name: "",
+        price: 0,
+        quantity: 1,
+        total: 0,
+        shippingAddress: "",
+        deliveryInstructions: "",
     });
-  };
+    const [quantityError, setQuantityError] = useState(false); 
+    const navigate = useNavigate();
 
-  const handleOrder = async () => {
-    try {
-      if (!shippingDetails.address || !shippingDetails.city || !shippingDetails.zipCode) {
-        alert("Please fill out all shipping details.");
-        return;
-      }
+   
+    useEffect(() => {
+        axios
+            .get("https://server-2-43kp.onrender.com/api/items")
+            .then((response) => {
+                setAvailableItems(response.data);
+            })
+            .catch((error) => console.error("Error fetching items:", error));
+    }, []);
 
-      const orderDetails = {
-        customerName: "testuser",
-        itemName,
-        price,
-        shippingDetails,
-        totalAmount,
-      };
 
-      const response = await axios.post(
-        "https://server-2-43kp.onrender.com/api/orders", 
-        orderDetails, 
-        { headers: { "Content-Type": "application/json" } }
-      );
+    const handleItemSelect = (e) => {
+        const itemId = e.target.value;
+        const item = availableItems.find((item) => item._id === itemId);
 
-      alert(`Order placed successfully: ${response.data.message}`);
-      window.location.href = "/orders"; // Redirect to the orders page after successful order
-    } catch (err) {
-      setError("Failed to place order. Please try again.");
-    }
-  };
+        if (item) {
+            setSelectedItem(item);
+            setOrderData({
+                name: item.name,
+                price: item.price,
+                quantity: 1,
+                total: item.price,
+                shippingAddress: "",
+                deliveryInstructions: "",
+            });
+        }
+    };
 
-  return (
-    <div>
-      <Header />
-      <div className="create-order">
-        <h1>Create New Order</h1>
-        <section className="order-form">
-          <h2>Fill in the details</h2>
-          <p>Item: {itemName}</p>
-          <p>Price: M {price.toLocaleString()}</p>
-          <p>Total Amount: M {totalAmount.toLocaleString()}</p>
-          <div className="form-group">
-            <label htmlFor="address">Shipping Address:</label>
-            <input type="text" id="address" name="address" value={shippingDetails.address} onChange={handleInputChange} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="city">City:</label>
-            <input type="text" id="city" name="city" value={shippingDetails.city} onChange={handleInputChange} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="zipCode">Zip Code:</label>
-            <input type="text" id="zipCode" name="zipCode" value={shippingDetails.zipCode} onChange={handleInputChange} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="deliveryDays">Estimated Delivery Days:</label>
-            <input type="number" id="deliveryDays" name="deliveryDays" value={shippingDetails.deliveryDays} onChange={handleInputChange} min="1" required />
-          </div>
-          <button onClick={calculateTotal}>Calculate Total</button>
-          <button onClick={handleOrder}>Place Order</button>
-          {error && <p className="error-message">{error}</p>}
-        </section>
-      </div>
-    </div>
-  );
+ 
+    const handleQuantityChange = (e) => {
+        const quantity = parseInt(e.target.value, 10);
+        if (isNaN(quantity) || quantity < 1) {
+            setQuantityError(true);
+        } else {
+            setQuantityError(false);
+            setOrderData((prevData) => ({
+                ...prevData,
+                quantity,
+                total: prevData.price * quantity,
+            }));
+        }
+    };
+
+
+    const handleShippingChange = (e) => {
+        setOrderData((prevData) => ({
+            ...prevData,
+            shippingAddress: e.target.value,
+        }));
+    };
+
+  
+    const handleDeliveryInstructionsChange = (e) => {
+        setOrderData((prevData) => ({
+            ...prevData,
+            deliveryInstructions: e.target.value,
+        }));
+    };
+
+    // Submit order
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (!selectedItem) {
+            alert("Please select an item to order.");
+            return;
+        }
+
+        if (quantityError) {
+            alert("Please enter a valid quantity.");
+            return;
+        }
+
+        axios
+            .post("https://server-2-43kp.onrender.com/api/orders", orderData)
+            .then(() => {
+                alert("Order placed successfully!");
+                navigate("/order-list");
+            })
+            .catch((error) => console.error("Error placing order:", error));
+    };
+
+    return (
+        <div className="add-item">
+            <h2>Order Item</h2>
+            <form onSubmit={handleSubmit}>
+                <label>Available Items:</label>
+                <select onChange={handleItemSelect} required>
+                    <option value="">-- Select an item --</option>
+                    {availableItems.map((item) => (
+                        <option key={item._id} value={item._id}>
+                            {item.name}
+                        </option>
+                    ))}
+                </select>
+
+                {selectedItem && (
+                    <>
+                        <label>Item Name:</label>
+                        <input type="text" value={orderData.name} readOnly />
+
+                        <label>Price (per unit):</label>
+                        <input type="number" value={orderData.price} readOnly />
+
+                        <label>Quantity:</label>
+                        <input
+                            type="number"
+                            min="1"
+                            value={orderData.quantity}
+                            onChange={handleQuantityChange}
+                            required
+                        />
+                        {quantityError && <span className="error">Invalid quantity</span>}
+
+                        <label>Total Price:</label>
+                        <input type="number" value={orderData.total} readOnly />
+
+                        <label>Shipping Address:</label>
+                        <input
+                            type="text"
+                            value={orderData.shippingAddress}
+                            onChange={handleShippingChange}
+                            required
+                        />
+
+                        <label>Delivery Instructions:</label>
+                        <input
+                            type="text"
+                            value={orderData.deliveryInstructions}
+                            onChange={handleDeliveryInstructionsChange}
+                        />
+                    </>
+                )}
+
+                <button type="submit" disabled={!selectedItem || quantityError}>
+                    Place Order
+                </button>
+            </form>
+        </div>
+    );
 };
 
-export default CreateOrder;
+export default AddItem;
