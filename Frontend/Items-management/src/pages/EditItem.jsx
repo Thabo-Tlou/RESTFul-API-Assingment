@@ -22,7 +22,7 @@ const EditItem = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({...formData, [name]: value });
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = (e) => {
@@ -35,47 +35,26 @@ const EditItem = () => {
             .catch((error) => console.error('Error updating item:', error));
     };
 
-    return ( <
-        div className = "edit-item" >
-        <
-        h2 > Edit Item < /h2> <
-        form onSubmit = { handleSubmit } >
-        <
-        label > Name: < /label> <
-        input type = "text"
-        name = "name"
-        value = { formData.name }
-        onChange = { handleChange }
-        required / >
+    return (
+        <div className="edit-item">
+            <h2>Edit Item</h2>
+            <form onSubmit={handleSubmit}>
+                <label>Name:</label>
+                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
 
-        <
-        label > Price: < /label> <
-        input type = "number"
-        name = "price"
-        value = { formData.price }
-        onChange = { handleChange }
-        required / >
+                <label>Price:</label>
+                <input type="number" name="price" value={formData.price} onChange={handleChange} required />
 
-        <
-        label > Quantity: < /label> <
-        input type = "number"
-        name = "quantity"
-        value = { formData.quantity }
-        onChange = { handleChange }
-        required / >
+                <label>Quantity:</label>
+                <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
 
-        <
-        label > Description: < /label> <
-        textarea name = "description"
-        value = { formData.description }
-        onChange = { handleChange } > < /textarea>
+                <label>Description:</label>
+                <textarea name="description" value={formData.description} onChange={handleChange}></textarea>
 
-        <
-        button type = "submit" > Update Item < /button> <
-        /form> <
-        Link to = "/item-list"
-        className = "back-button" > Back to Item List < /Link> {/ * Link back to the item list * /} <
-        /div>
+                <button type="submit">Update Item</button>
+            </form>
+            <Link to="/item-list" className="back-button">Back to Item List</Link> {/* Link back to the item list */}
+        </div>
     );
 };
 
