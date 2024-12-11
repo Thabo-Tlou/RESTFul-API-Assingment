@@ -11,7 +11,8 @@ const Home = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/items");
+        // Update the API URL to use the hosted backend
+        const response = await axios.get("https://server-2-43kp.onrender.com/api/items");
         setItems(response.data);
         setLoading(false);
       } catch (error) {
