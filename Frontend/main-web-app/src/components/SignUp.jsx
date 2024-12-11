@@ -1,4 +1,3 @@
-// components/SignUp.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,7 +12,7 @@ const SignUp = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    // Handle input changes
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -22,7 +21,7 @@ const SignUp = () => {
         });
     };
 
-    // Handle form submission
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const { username, email, password } = formData;
@@ -33,12 +32,13 @@ const SignUp = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/signup', formData);
+            
+            const response = await axios.post('https://server-2-43kp.onrender.com/api/signup', formData);
             if (response.status === 201) {
-                navigate('/login'); // Redirect to login page on success
+                navigate('/login'); 
             }
         } catch (err) {
-            setError(err.response.data.message || 'An error occurred. Please try again.');
+            setError(err.response?.data?.message || 'An error occurred. Please try again.');
             console.error('Error signing up:', err);
         }
     };

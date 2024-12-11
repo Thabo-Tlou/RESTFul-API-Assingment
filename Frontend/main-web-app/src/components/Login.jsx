@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Login.css"; // Ensure this CSS file exists for proper styling
+import "../styles/Login.css"; 
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +20,7 @@ const Login = () => {
     });
   };
 
-  // Handle form submission
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
@@ -34,7 +34,7 @@ const Login = () => {
     setSuccessMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch("https://server-2-43kp.onrender.com/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -45,14 +45,13 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-      
         localStorage.setItem("token", data.token);
 
         setSuccessMessage("Login successful! Redirecting to home...");
 
-    
+      
         setTimeout(() => {
-          navigate("/home"); 
+          navigate("/home");
         }, 1500);
       } else {
         setError(data.message || "Invalid email or password. Please try again.");
@@ -98,7 +97,8 @@ const Login = () => {
           <button type="submit" className="submit-button">Login</button>
         </form>
         <p>
-          Don't have an account? <a href="/signup" className="signup-link">Sign Up</a>
+          Don't have an account?{" "}
+          <a href="/signup" className="signup-link">Sign Up</a>
         </p>
       </div>
     </div>
