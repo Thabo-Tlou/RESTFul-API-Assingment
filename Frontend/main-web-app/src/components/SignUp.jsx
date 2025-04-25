@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaUser, FaEnvelope, FaLock, FaGoogle } from "react-icons/fa"; // Import icons
 import "../styles/SignUp.css";
 import robotImage from "/images/ROBOT.png"; // Make sure the image path is correct
 
@@ -69,30 +70,39 @@ const SignUp = () => {
             <span onClick={() => navigate("/login")}>Login</span>
           </p>
           <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <div className="input-wrapper">
+              <FaUser className="input-icon" />
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="input-wrapper">
+              <FaEnvelope className="input-icon" />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="input-wrapper">
+              <FaLock className="input-icon" />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
             <div className="terms">
               <input type="checkbox" required />
@@ -108,7 +118,9 @@ const SignUp = () => {
 
           <div className="or-divider">OR</div>
           <div className="social-login">
-            <button className="google-login">Google</button>
+            <button className="google-login">
+              <FaGoogle className="google-icon" /> Google
+            </button>
             <button className="apple-login">Apple</button>
           </div>
         </div>

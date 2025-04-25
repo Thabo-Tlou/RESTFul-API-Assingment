@@ -286,3 +286,56 @@ form input::placeholder {
     padding: 2rem;
   }
 }
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-top: 20px;
+}
+
+.input-wrapper .input-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--light-gray);
+  font-size: 1.2rem;
+}
+
+.input-wrapper input {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem 1rem 0.8rem 2.5rem; /* Adjust padding to leave space for the icon */
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  color: var(--white);
+  font-size: 0.95rem;
+}
+
+.input-wrapper input::placeholder {
+  color: var(--light-gray);
+}
+
+/* Style for Google login button */
+.google-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #db4437; /* Google red color */
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem;
+  color: var(--white);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.google-login:hover {
+  background-color: #c1351d; /* Darker red on hover */
+}
+
+.google-login .google-icon {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
