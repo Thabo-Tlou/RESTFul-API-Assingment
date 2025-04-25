@@ -1,90 +1,120 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import '../styles/SignUp.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "../styles/SignUp.css";
+import robotImage from "/images/ROBOT.png"; // Make sure the image path is correct
 
 const SignUp = () => {
-    const [formData, setFormData] = useState({
-        username: '',
-        email: '',
-        password: ''
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
     });
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { username, email, password } = formData;
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
+    if (!username || !email || !password) {
+      setError("All fields are required.");
+      return;
+    }
 
+    try {
+      const response = await axios.post(
+        "https://server-2-43kp.onrender.com/api/signup",
+        formData
+      );
+      if (response.status === 201) {
+        navigate("/login");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "An error occurred. Please try again."
+      );
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const { username, email, password } = formData;
-
-        if (!username || !email || !password) {
-            setError('All fields are required.');
-            return;
-        }
-
-        try {
-            
-            const response = await axios.post('https://server-2-43kp.onrender.com/api/signup', formData);
-            if (response.status === 201) {
-                navigate('/login'); 
-            }
-        } catch (err) {
-            setError(err.response?.data?.message || 'An error occurred. Please try again.');
-            console.error('Error signing up:', err);
-        }
-    };
-
-    return (
-        <div className="signup-container">
-            <h2>Sign Up</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="username">Username</label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                {error && <p className="error">{error}</p>}
-                <button type="submit">Sign Up</button>
-            </form>
+  return (
+    <div className="signup-ui-container">
+      <div className="left-panel">
+        <div className="robot-wrapper">
+          <img
+            src={robotImage}
+            alt="Robot with Accessories"
+            className="robot-img"
+          />
+          <div className="knee-caption">
+            Capturing Innovation, <br />
+            Empowering Intelligence
+          </div>
         </div>
-    );
+      </div>
+
+      <div className="right-panel">
+        <div className="signup-form-box">
+          <h2>Create an account</h2>
+          <p className="login-text">
+            Already have an account?{" "}
+            <span onClick={() => navigate("/login")}>Login</span>
+          </p>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+
+            <div className="terms">
+              <input type="checkbox" required />
+              <label>I agree to the Terms & Conditions</label>
+            </div>
+
+            {error && <p className="error">{error}</p>}
+
+            <button type="submit" className="signup-btn">
+              Create account
+            </button>
+          </form>
+
+          <div className="or-divider">OR</div>
+          <div className="social-login">
+            <button className="google-login">Google</button>
+            <button className="apple-login">Apple</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default SignUp;
